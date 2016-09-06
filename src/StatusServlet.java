@@ -1,6 +1,8 @@
+import javax.jms.Session;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,9 +14,10 @@ public class StatusServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
 
         BufferedReader bf = new BufferedReader(new InputStreamReader(request.getInputStream()));
-        Message msg = Message.fromJSON(bf.readLine());
-        if (msg != null) {
-            User user = userList.getByLogin(msg.getText());
+        String userName = request.getParameter("userName");
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            User user = userList.getByLogin(userName);
             if (user != null)
                 response.setStatus(200);
             else

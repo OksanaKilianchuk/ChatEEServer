@@ -1,6 +1,7 @@
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,11 +17,11 @@ public class RoomServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
 
+        HttpSession session = request.getSession(false);
         BufferedReader bf = new BufferedReader(new InputStreamReader(request.getInputStream()));
         Message msg = Message.fromJSON(bf.readLine());
 
-        if (msg != null) {
-
+        if ((session != null) && (msg != null)) {
             String tostr = msg.getTo().substring(0, 3);
             if (tostr.equals("new")) {
                 Room room = new Room();
@@ -30,9 +31,7 @@ public class RoomServlet extends HttpServlet {
                     User user = userList.getByLogin(listUserLogins[i]);
                     if (user != null)
                         room.usersList.add(user);
-
                 }
-                //room.usersList.add(userList.getByLogin(msg.getFrom()));
                 roomList.add(room);
             } else {
                 for (Room room : roomList) {
@@ -52,6 +51,6 @@ public class RoomServlet extends HttpServlet {
             }
 
         } else
-            response.setStatus(400); // Bad request
+            response.setStatus(400);
     }
 }

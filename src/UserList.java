@@ -21,6 +21,14 @@ public class UserList {
         list.add(user);
     }
 
+    public boolean contains(User newUser) {
+        for (User user : list) {
+            if (user.equals(newUser))
+                return true;
+        }
+        return false;
+    }
+
     public synchronized String toJSON() {
         if (list.size() > 0) {
             Gson gson = new GsonBuilder().create();
